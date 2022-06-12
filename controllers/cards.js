@@ -10,7 +10,7 @@ const getCards = (req, res) => {
       res.status(200).send(cards);
     })
     .catch((err) => {
-      res.status(500).send({ message: "Произошла ошибка" });
+      res.status(500).send({ message: "На сервере произошла ошибка" });
     });
 };
 
@@ -23,7 +23,11 @@ const createCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.status(400).send({ message: "Переданы некорректные данные при создании карточки" });
+        res
+          .status(400)
+          .send({
+            message: "Переданы некорректные данные при создании карточки",
+          });
         return;
       }
       res.status(500).send({ message: "Произошла ошибка" });
@@ -40,7 +44,7 @@ const deleteCard = (req, res) => {
       res.status(200).send(card);
     })
     .catch((err) => {
-      res.status(500).send({ message: "Произошла ошибка" });
+      res.status(500).send({ message: "На сервере произошла ошибка" });
     });
 };
 
@@ -58,7 +62,7 @@ const setLike = (req, res) => {
       res.status(200).send(card);
     })
     .catch((err) => {
-      res.status(500).send({ message: "Произошла ошибка" });
+      res.status(500).send({ message: "На сервере произошла ошибка" });
     });
 };
 
@@ -76,7 +80,7 @@ const deleteLike = (req, res) => {
       res.status(200).send(card);
     })
     .catch((err) => {
-      res.status(500).send({ message: "Произошла ошибка" });
+      res.status(500).send({ message: "На сервере произошла ошибка" });
     });
 };
 
