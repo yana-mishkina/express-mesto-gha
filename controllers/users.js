@@ -1,16 +1,16 @@
-const User = require("../models/user");
+const User = require('../models/user');
 
 const getUsers = (req, res) => {
   User.find({})
     .then((users) => {
       if (users.length === 0) {
-        res.status(404).send({ message: "Пользователи не найдены" });
+        res.status(404).send({ message: 'Пользователи не найдены' });
         return;
       }
       res.status(200).send(users);
     })
-    .catch((err) => {
-      res.status(500).send({ message: "Произошла ошибка" });
+    .catch(() => {
+      res.status(500).send({ message: 'Произошла ошибка' });
     });
 };
 
@@ -20,13 +20,13 @@ const getUser = (req, res) => {
       if (!user) {
         res
           .status(404)
-          .send({ message: "Пользователь по указанному id не найден" });
+          .send({ message: 'Пользователь по указанному id не найден' });
         return;
       }
       res.status(200).send(user);
     })
-    .catch((err) => {
-      res.status(500).send({ message: "На сервере произошла ошибка" });
+    .catch(() => {
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
@@ -37,15 +37,15 @@ const createUser = (req, res) => {
       res.status(200).send(user);
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
+      if (err.name === 'ValidationError') {
         res
           .status(400)
           .send({
-            message: "Переданы некорректные данные при создании пользователя",
+            message: 'Переданы некорректные данные при создании пользователя',
           });
         return;
       }
-      res.status(500).send({ message: "На сервере произошла ошибка" });
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
@@ -56,13 +56,13 @@ const updateAvatar = (req, res) => {
       if (!user) {
         res
           .status(404)
-          .send({ message: "Пользователь по указанному id не найден" });
+          .send({ message: 'Пользователь по указанному id не найден' });
         return;
       }
       res.status(200).send(user);
     })
-    .catch((err) => {
-      res.status(500).send({ message: "Произошла ошибка" });
+    .catch(() => {
+      res.status(500).send({ message: 'Произошла ошибка' });
     });
 };
 
@@ -73,13 +73,13 @@ const updateInfo = (req, res) => {
       if (!user) {
         res
           .status(404)
-          .send({ message: "Пользователь по указанному id не найден" });
+          .send({ message: 'Пользователь по указанному id не найден' });
         return;
       }
       res.status(200).send(user);
     })
-    .catch((err) => {
-      res.status(500).send({ message: "На сервере произошла ошибка" });
+    .catch(() => {
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
