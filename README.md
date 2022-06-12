@@ -28,4 +28,4 @@
 `npm run dev` — запускает сервер с hot-reload
 
 ##
-git@github.com:yana-mishkina/express-mesto-gha.git
+[git@github.com:yana-mishkina/express-mesto-gha.git](https://github.com/yana-mishkina/express-mesto-gha.git)
