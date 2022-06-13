@@ -35,7 +35,7 @@ const createUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send(err.message);
+        res.status(400).send({ message: err.message });
         return;
       }
       res.status(500).send({ message: 'На сервере произошла ошибка' });
@@ -53,7 +53,7 @@ const updateAvatar = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send(err.message);
+        res.status(400).send({ message: err.message });
       } else if (err.name === 'CastError') {
         res.status(404).send({ message: 'Пользователь по указанному id не найден' });
       } else {
@@ -73,7 +73,7 @@ const updateInfo = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send(err.message);
+        res.status(400).send({ message: err.message });
       } else if (err.name === 'CastError') {
         res.status(404).send({ message: 'Пользователь по указанному id не найден' });
       } else {
