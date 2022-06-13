@@ -34,11 +34,18 @@ const createCard = (req, res) => {
 
 const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
+    .orFail(new Error('NotFound'))
     .then((card) => {
       res.status(200).send(card);
     })
-    .catch(() => {
-      res.status(404).send({ message: 'Карточка с указанным id не найдена' });
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Переданы некорректные данные для удаления карточки' });
+      } else if (err.message === 'NotFound') {
+        res.status(404).send({ message: 'Карточка с указанным id не найдена ' });
+      } else {
+        res.status(500).send({ message: 'На сервере произошла ошибка' });
+      }
     });
 };
 

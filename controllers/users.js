@@ -16,12 +16,15 @@ const getUsers = (req, res) => {
 
 const getUser = (req, res) => {
   User.findById(req.params.userId)
+    .orFail(new Error('NotFound'))
     .then((user) => {
       res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(404).send({ message: 'Пользователь по указанному id не найден' });
+        res.status(400).send({ message: 'Пользователь по указанному id не найден' });
+      } else if (err.message === 'NotFound') {
+        res.status(404).send({ message: 'Пользователь не найден' });
       } else {
         res.status(500).send({ message: 'На сервере произошла ошибка' });
       }
