@@ -23,8 +23,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/', cards);
-app.use('/', users);
+app.use('/cards', cards);
+app.use('/users', users);
 
 app.use('*', (req, res) => {
   res.status(404).send({

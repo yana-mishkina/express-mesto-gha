@@ -3,10 +3,6 @@ const User = require('../models/user');
 const getUsers = (req, res) => {
   User.find({})
     .then((users) => {
-      if (users.length === 0) {
-        res.status(404).send({ message: 'Пользователи не найдены' });
-        return;
-      }
       res.status(200).send(users);
     })
     .catch(() => {
@@ -39,7 +35,7 @@ const createUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя' });
+        res.status(400).send(err.message);
         return;
       }
       res.status(500).send({ message: 'На сервере произошла ошибка' });
@@ -57,7 +53,7 @@ const updateAvatar = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при обновлении аватара' });
+        res.status(400).send(err.message);
       } else if (err.name === 'CastError') {
         res.status(404).send({ message: 'Пользователь по указанному id не найден' });
       } else {
@@ -77,7 +73,7 @@ const updateInfo = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при обновлении профиля пользователя' });
+        res.status(400).send(err.message);
       } else if (err.name === 'CastError') {
         res.status(404).send({ message: 'Пользователь по указанному id не найден' });
       } else {

@@ -5,11 +5,7 @@ const getCards = (req, res) => {
     .then((cards) => {
       res.status(200).send(cards);
     })
-    .catch((cards) => {
-      if (cards.length === 0) {
-        res.status(404).send({ message: 'Карточки не найдены' });
-        return;
-      }
+    .catch(() => {
       res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 };
@@ -23,9 +19,7 @@ const createCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({
-          message: 'Переданы некорректные данные при создании карточки',
-        });
+        res.status(400).send(err.message);
         return;
       }
       res.status(500).send({ message: 'Произошла ошибка' });
