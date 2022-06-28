@@ -12,6 +12,7 @@ const {
 } = require('../controllers/users');
 
 router.get('/', getUsers);
+router.get('/me', getCurrentUser);
 router.get('/:userId', getUser);
 
 router.patch('/me/avatar', celebrate({
@@ -26,7 +27,5 @@ router.patch('/me', celebrate({
     about: Joi.string().min(2).max(30),
   }),
 }), updateInfo);
-
-router.get('/me', getCurrentUser);
 
 module.exports = router;

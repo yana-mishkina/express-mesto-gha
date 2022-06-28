@@ -8,29 +8,31 @@ const NotAuthError = require('../errors/NotAuthError');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
-const getUsers = (req, res, next) => {
+const getUsers = (req, res) => {
   User.find({})
     .then((users) => {
       res.status(200).send(users);
     })
-    .catch(next);
+    .catch(() => {
+      res.status(500).send({ message: 'Произошла ошибка' });
+    });
 };
 
-const getUser = (req, res, next) => {
+const getUser = (req, res) => {
   User.findById(req.params.userId)
-    .orFail(new NotFoundError('Пользователь по указанному id не найден'))
+    .orFail(new Error('Пользователь по указанному id не найден'))
     .then((user) => {
       res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequestError('Пользователь по указанному id не найден');
+        res.status(400).send({ message: 'Пользователь по указанному id не найден' });
+      } else if (err.message === 'NotFound') {
+        res.status(404).send({ message: 'Пользователь не найден' });
+      } else {
+        res.status(500).send({ message: 'На сервере произошла ошибка' });
       }
-      if (err.message === 'NotFound') {
-        throw new NotFoundError('Пользователь не найден');
-      }
-    })
-    .catch(next);
+    });
 };
 
 const createUser = (req, res, next) => {
@@ -56,46 +58,44 @@ const createUser = (req, res, next) => {
     .catch(next);
 };
 
-const updateAvatar = (req, res, next) => {
+const updateAvatar = (req, res) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar }, {
     new: true,
     runValidators: true,
   })
-    .orFail(new NotFoundError('Пользователь по указанному id не найден'))
     .then((user) => {
       res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError({ message: err.message });
+        res.status(400).send({ message: err.message });
+      } else if (err.name === 'CastError') {
+        res.status(404).send({ message: 'Пользователь по указанному id не найден' });
+      } else {
+        res.status(500).send({ message: 'На сервере произошла ошибка' });
       }
-      if (err.name === 'CastError') {
-        throw new NotFoundError('Пользователь по указанному id не найден');
-      }
-    })
-    .catch(next);
+    });
 };
 
-const updateInfo = (req, res, next) => {
+const updateInfo = (req, res) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about }, {
     new: true,
     runValidators: true,
   })
-    .orFail(new NotFoundError('Пользователь по указанному id не найден'))
     .then((user) => {
       res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError({ message: err.message });
+        res.status(400).send({ message: err.message });
+      } else if (err.name === 'CastError') {
+        res.status(404).send({ message: 'Пользователь по указанному id не найден' });
+      } else {
+        res.status(500).send({ message: 'На сервере произошла ошибка' });
       }
-      if (err.name === 'CastError') {
-        throw new NotFoundError('Пользователь по указанному id не найден');
-      }
-    })
-    .catch(next);
+    });
 };
 
 const login = (req, res, next) => {
@@ -106,7 +106,7 @@ const login = (req, res, next) => {
       res.send({ token });
     })
     .catch((err) => {
-      throw new NotAuthError({ message: err.message });
+      throw new NotAuthError(err.message);
     })
     .catch(next);
 };
