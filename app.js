@@ -1,8 +1,13 @@
+/* eslint-disable no-unused-vars */
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const users = require('./routes/users');
 const cards = require('./routes/cards');
+const { login, createUser } = require('./controllers/users');
+const auth = require('./middlewares/auth');
+const NotFoundError = require('./errors/NotFoundError');
 
 const app = express();
 
@@ -16,20 +21,20 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '62a5ddd616b60ffade8edf4d',
-  };
-  next();
-});
+app.post('/signin', login);
+app.post('/signup', createUser);
+
+app.use(auth);
 
 app.use('/cards', cards);
 app.use('/users', users);
 
-app.use('*', (req, res) => {
-  res.status(404).send({
-    message: 'Страница не найдена.',
-  });
+app.use('*', () => {
+  throw new NotFoundError('Страница не найдена.');
+});
+
+app.use((err, req, res, next) => {
+  res.send({ message: err.message });
 });
 
 app.listen(PORT, () => {
