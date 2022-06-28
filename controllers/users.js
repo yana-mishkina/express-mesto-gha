@@ -44,16 +44,22 @@ const createUser = (req, res, next) => {
       email: req.body.email,
       password: hash,
     }))
-    .then((user) => {
-      res.status(200).send(user);
-    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError({ message: err.message });
+        throw new BadRequestError(err.message);
       }
       if (err.code === 11000) {
         throw new ConflictError('Пользователь с таким email существует');
       }
+    })
+    .then((user) => {
+      res.status(200).send({
+        _id: user._id,
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email,
+      });
     })
     .catch(next);
 };
