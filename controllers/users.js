@@ -18,7 +18,7 @@ const getUsers = (req, res, next) => {
 
 const getUser = (req, res, next) => {
   User.findById(req.params.userId)
-    .orFail(new NotFoundError('NotFound'))
+    .orFail(new NotFoundError('Пользователь по указанному id не найден'))
     .then((user) => {
       res.status(200).send(user);
     })
@@ -62,6 +62,7 @@ const updateAvatar = (req, res, next) => {
     new: true,
     runValidators: true,
   })
+    .orFail(new NotFoundError('Пользователь по указанному id не найден'))
     .then((user) => {
       res.status(200).send(user);
     })
@@ -82,6 +83,7 @@ const updateInfo = (req, res, next) => {
     new: true,
     runValidators: true,
   })
+    .orFail(new NotFoundError('Пользователь по указанному id не найден'))
     .then((user) => {
       res.status(200).send(user);
     })
@@ -111,6 +113,7 @@ const login = (req, res, next) => {
 
 const getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
+    .orFail(new NotFoundError('Запрашиваемый пользователь не найден'))
     .then((user) => {
       res.status(200).send(user);
     })
