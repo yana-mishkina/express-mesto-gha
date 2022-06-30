@@ -11,7 +11,13 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 const getUsers = (req, res) => {
   User.find({})
     .then((users) => {
-      res.status(200).send(users);
+      res.send({
+        _id: users._id,
+        name: users.name,
+        about: users.about,
+        avatar: users.avatar,
+        email: users.email,
+      });
     })
     .catch(() => {
       res.status(500).send({ message: 'Произошла ошибка' });
@@ -22,7 +28,13 @@ const getUser = (req, res) => {
   User.findById(req.params.userId)
     .orFail(new Error('Пользователь по указанному id не найден'))
     .then((user) => {
-      res.status(200).send(user);
+      res.send({
+        _id: user._id,
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email,
+      });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -45,11 +57,11 @@ const createUser = (req, res, next) => {
       password: hash,
     }))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        throw new BadRequestError(err.message);
-      }
       if (err.code === 11000) {
         throw new ConflictError('Пользователь с таким email существует');
+      }
+      if (err.name === 'ValidationError') {
+        throw new BadRequestError(err.message);
       }
     })
     .then((user) => {
@@ -71,7 +83,13 @@ const updateAvatar = (req, res) => {
     runValidators: true,
   })
     .then((user) => {
-      res.status(200).send(user);
+      res.send({
+        _id: user._id,
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email,
+      });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -91,7 +109,13 @@ const updateInfo = (req, res) => {
     runValidators: true,
   })
     .then((user) => {
-      res.status(200).send(user);
+      res.send({
+        _id: user._id,
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email,
+      });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -108,7 +132,11 @@ const login = (req, res, next) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expires: '7d' });
+      const token = jwt.sign(
+        { _id: user._id },
+        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+        { expiresIn: '7d' },
+      );
       res.send({ token });
     })
     .catch((err) => {
