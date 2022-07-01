@@ -22,14 +22,6 @@ const getUser = (req, res, next) => {
     .then((user) => {
       res.send(user);
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        throw new BadRequestError('Пользователь по указанному id не найден');
-      }
-      if (err.message === 'NotFound') {
-        throw new NotFoundError('Пользователь не найден');
-      }
-    })
     .catch(next);
 };
 
