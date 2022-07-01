@@ -13,7 +13,12 @@ const {
 
 router.get('/', getUsers);
 router.get('/me', getCurrentUser);
-router.get('/:userId', getUser);
+
+router.get('/:userId', celebrate({
+  params: Joi.object().keys({
+    id: Joi.string().required().min(24).max(24),
+  }),
+}), getUser);
 
 router.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
