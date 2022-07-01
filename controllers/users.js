@@ -18,20 +18,15 @@ const getUsers = (req, res, next) => {
 
 const getUser = (req, res, next) => {
   User.findById(req.params.userId)
-    .orFail(new Error('Пользователь по указанному id не найден'))
+    .orFail(new NotFoundError('Пользователь по указанному id не найден'))
     .then((user) => {
-      res.send({
-        _id: user._id,
-        name: user.name,
-        about: user.about,
-        avatar: user.avatar,
-        email: user.email,
-      });
+      res.send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         throw new BadRequestError('Пользователь по указанному id не найден');
-      } else if (err.message === 'NotFound') {
+      }
+      if (err.message === 'NotFound') {
         throw new NotFoundError('Пользователь не найден');
       }
     })
