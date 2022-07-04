@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -6,8 +7,9 @@ const users = require('./routes/users');
 const cards = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
-
-const url = /http(s?):\/\/(www\.)?[0-9a-zA-Z-]+\.[a-zA-Z]+([0-9a-zA-Z-._~:/?#[\]@!$&'()*+,;=]+)/;
+const errorsHandler = require('./middlewares/errorsHandler');
+const { url } = require('./regex/regex');
+const NotFoundError = require('./errors/NotFoundError');
 
 const app = express();
 
@@ -43,25 +45,12 @@ app.use(auth);
 app.use('/cards', cards);
 app.use('/users', users);
 
-app.use('*', (req, res) => {
-  res.status(404).send({
-    message: 'Страница не найдена.',
-  });
+app.use('*', () => {
+  throw new NotFoundError('Страница не найдена');
 });
 
 app.use(errors());
-
-// eslint-disable-next-line no-unused-vars
-app.use((err, req, res, next) => {
-  const { statusCode = 500, message } = err;
-  res
-    .status(statusCode)
-    .send({
-      message: statusCode === 500
-        ? 'На сервере произошла ошибка'
-        : message,
-    });
-});
+app.use(errorsHandler);
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);

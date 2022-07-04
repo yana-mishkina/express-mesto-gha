@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 
-const url = /http(s?):\/\/(www\.)?[0-9a-zA-Z-]+\.[a-zA-Z]+([0-9a-zA-Z-._~:/?#[\]@!$&'()*+,;=]+)/;
+const { url } = require('../regex/regex');
 
 const {
   getUsers,
